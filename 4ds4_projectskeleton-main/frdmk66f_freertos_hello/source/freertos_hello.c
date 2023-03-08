@@ -12,11 +12,11 @@
 #include "Accelerometer_Component.h"
 
 void led_producer_task(void* pvParameters) {
-	ftm_chnl_t channel = (ftm_chnl_t)pvParameters;
+	char speed = (char)pvParameters;
 	BaseType_t status;
 
 	//led_value would be a global variable
-	status = xQueueSendToBack(led_queue, (void*) &channel, portMAX_DELAY);
+	status = xQueueSendToBack(led_queue, (void*) &speed, portMAX_DELAY);
 	if (status != pdPASS)
 		PRINTF("Queue Send failed!.\r\n");
 
@@ -35,8 +35,8 @@ int main(void)
       setupLEDComponent();
 //    setupAccelerometerComponent();
 
-    ftm_chnl_t channel = kFTM_Chnl_5;
-    xTaskCreate(led_producer_task, "producer", 200, (void*)channel, 2, NULL);
+    char speed = 'm';
+    xTaskCreate(led_producer_task, "producer", 200, (void*)speed, 2, NULL);
 
 
     vTaskStartScheduler();

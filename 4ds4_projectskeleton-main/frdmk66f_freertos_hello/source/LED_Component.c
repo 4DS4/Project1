@@ -60,7 +60,7 @@ void ledTask(void* pvParameters)
 		break;
 	case 'm':
 		r = 100;
-		g = 100;
+		g = 75;
 		break;
 	case 's':
 		r = 0;
