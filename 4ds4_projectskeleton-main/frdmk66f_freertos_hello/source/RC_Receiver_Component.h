@@ -25,4 +25,16 @@ void setupRCPins();
 
 void rcTask(void* pvParameters);
 
+typedef struct {
+	uint16_t header;
+	uint16_t ch1;
+	uint16_t ch2;
+	uint16_t ch3;
+	uint16_t ch4;
+	uint16_t ch5;
+	uint16_t ch6;
+	uint16_t ch7;
+	uint16_t ch8;
+} RC_Values;
+
 #endif /* RC_RECEIVER_COMPONENT_H */
