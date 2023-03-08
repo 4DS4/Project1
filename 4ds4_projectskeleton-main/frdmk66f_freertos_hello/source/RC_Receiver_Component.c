@@ -39,7 +39,6 @@ void setupUART_RC()
 	config.enableTx = false;
 	config.enableRx = true;
 	UART_Init(UART1, &config, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-	char speed;
 }
 
 void rcTask(void* pvParameters)
@@ -50,7 +49,7 @@ void rcTask(void* pvParameters)
 	Angle, and LED queues. The task can be paused if it receives a
 	signal from Hold semaphore.
 	*/
-
+	char speed;
 	//RC task implementation
 	UART_ReadBlocking(UART1, ptr, 1);
 	if (*ptr != 0x20)
