@@ -68,34 +68,6 @@ void BOARD_InitPins(void)
     // Port D Clock Gate Control: Clock enabled
     CLOCK_EnableClock(kCLOCK_PortD);
 
-    PORT_SetPinMux(PORTD, 1U, kPORT_MuxAlt4); //CH1
-    PORT_SetPinMux(PORTC, 8U, kPORT_MuxAlt3); //CH4
-    PORT_SetPinMux(PORTC, 9U, kPORT_MuxAlt3); //CH5
-
-
-    PORTA->PCR[2] = ((PORTA->PCR[2] &
-                      /* Mask bits to zero which are setting */
-                      (~(PORT_PCR_PS_MASK | PORT_PCR_PE_MASK | PORT_PCR_ISF_MASK)))
-
-                     /* Pull Select: Internal pulldown resistor is enabled on the corresponding pin, if the
-                      * corresponding PE field is set. */
-                     | PORT_PCR_PS(kPORT_PullDown)
-
-                     /* Pull Enable: Internal pullup or pulldown resistor is not enabled on the corresponding pin. */
-                     | PORT_PCR_PE(kPORT_PullDisable));
-
-    SIM->SOPT5 = ((SIM->SOPT5 &
-                   /* Mask bits to zero which are setting */
-                   (~(SIM_SOPT5_UART0TXSRC_MASK)))
-
-                  /* UART 0 transmit data source select: UART0_TX pin. */
-                  | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX));
-//    /* PORTB16 (pin E10) is configured as UART0_RX */
-//    PORT_SetPinMux(BOARD_DEBUG_UART_RX_PORT, BOARD_DEBUG_UART_RX_PIN, kPORT_MuxAlt3);
-//
-//    /* PORTB17 (pin E9) is configured as UART0_TX */
-//    PORT_SetPinMux(BOARD_DEBUG_UART_TX_PORT, BOARD_DEBUG_UART_TX_PIN, kPORT_MuxAlt3);
-
 }
 /***********************************************************************************************************************
  * EOF

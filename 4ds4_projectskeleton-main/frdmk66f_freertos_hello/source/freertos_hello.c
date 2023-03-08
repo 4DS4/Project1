@@ -11,17 +11,6 @@
 #include "LED_Component.h"
 #include "Accelerometer_Component.h"
 
-void led_producer_task(void* pvParameters) {
-	char speed = (char)pvParameters;
-	BaseType_t status;
-
-	//led_value would be a global variable
-	status = xQueueSendToBack(led_queue, (void*) &speed, portMAX_DELAY);
-	if (status != pdPASS)
-		PRINTF("Queue Send failed!.\r\n");
-
-	vTaskDelete(NULL);
-}
 
 int main(void)
 {
@@ -29,14 +18,13 @@ int main(void)
 	BOARD_InitBootPins();
     BOARD_InitBootClocks();
     //
-//    setupMotorComponent();
-//    setupRCReceiverComponent();
+    setupMotorComponent();
+    setupRCReceiverComponent();
 //    setupTerminalComponent();
-      setupLEDComponent();
+    setupLEDComponent();
 //    setupAccelerometerComponent();
 
-    char speed = 'm';
-    xTaskCreate(led_producer_task, "producer", 200, (void*)speed, 2, NULL);
+    xTaskCreate(rcTask, "producer", 200, NULL, 2, NULL);
 
 
     vTaskStartScheduler();

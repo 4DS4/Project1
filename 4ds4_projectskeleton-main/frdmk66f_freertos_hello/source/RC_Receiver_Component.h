@@ -35,6 +35,8 @@ typedef struct {
 	uint16_t ch6;
 	uint16_t ch7;
 	uint16_t ch8;
+	uint16_t ch9;
+	uint16_t ch10;
 } RC_Values;
 
 #endif /* RC_RECEIVER_COMPONENT_H */

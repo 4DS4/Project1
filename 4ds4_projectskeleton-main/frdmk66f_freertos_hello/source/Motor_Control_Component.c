@@ -2,15 +2,17 @@
 
 
 
-//	dutyCycleSpeed = speed * 0.0125f/100.0f + 0.07025;	//use these conversions
 //	dutyCycleAngle = angle * 0.0125f/100.0f + 0.079;
 
 
 QueueHandle_t motor_queue;
 QueueHandle_t angle_queue;
 
+
 void setupMotorComponent()
 {
+	BaseType_t status;
+
 	setupMotorPins();
 
 	setupDCMotor();
@@ -18,22 +20,24 @@ void setupMotorComponent()
 
     /*************** Motor Task ***************/
 	//Create Motor Queue
+	motor_queue = xQueueCreate(1, sizeof(int));
 	//Create Motor Task
+	status = xTaskCreate(motorTask, "motor", 200, (void*)led_queue, 3, NULL);
+	if (status != pdPASS)
+		PRINTF("Task creation failed!.\r\n");
 
     /*************** Position Task ***************/
 	//Create Angle Queue
+	angle_queue = xQueueCreate(1, sizeof(int));
 	//Create Position Task
+	status = xTaskCreate(positionTask, "servo", 200, (void*)led_queue, 3, NULL);
+	if (status != pdPASS)
+		PRINTF("Task creation failed!.\r\n");
+
 }
 
 void setupMotorPins()
 {
-    //Configure PWM pins for DC and Servo motors
-    /* Port A Clock Gate Control: Clock enabled */
-    CLOCK_EnableClock(kCLOCK_PortA);
-    /* Port B Clock Gate Control: Clock enabled */
-    CLOCK_EnableClock(kCLOCK_PortB);
-    /* Port C Clock Gate Control: Clock enabled */
-    CLOCK_EnableClock(kCLOCK_PortC);
 
     PORT_SetPinMux(PORTC, 1U, kPORT_MuxAlt4);
     PORT_SetPinMux(PORTA, 6U, kPORT_MuxAlt3);
@@ -100,10 +104,36 @@ void updatePWM_dutyCycle(ftm_chnl_t channel, float dutyCycle)
 
 void motorTask(void* pvParameters)
 {
+	BaseType_t status;
+	int speed;
+	float dutyCycle;
 	//Motor task implementation
+	while(1){
+		status = xQueueReceive(motor_queue, (void *) &speed, portMAX_DELAY);
+		if (status != pdPASS)
+						PRINTF("Queue Receive failed!.\r\n");
+		printf("Speed got %d\n", speed);
+		dutyCycle = speed * 0.0125f/100.0f + 0.07025;	//use these conversions
+		printf("Duty cycle %.4f\n", dutyCycle);
+		updatePWM_dutyCycle(FTM_CHANNEL_DC_MOTOR,  dutyCycle);
+//		FTM_SetSoftwareTrigger(FTM_MOTORS, true);
+	}
+
 }
 
 void positionTask(void* pvParameters)
 {
+	BaseType_t status;
+	int angle;
+	float dutyCycle;
 	//Position task implementation
+	while(1) {
+		status = xQueueReceive(angle_queue, (void *) &angle, portMAX_DELAY);
+		if (status != pdPASS)
+						PRINTF("Queue Receive failed!.\r\n");
+		dutyCycle = angle * 0.0125f/100.0f + 0.079;
+		updatePWM_dutyCycle(FTM_CHANNEL_SERVO, dutyCycle);
+		FTM_SetSoftwareTrigger(FTM_MOTORS, true);
+	}
+
 }
