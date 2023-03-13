@@ -14,8 +14,10 @@ void setupRCReceiverComponent()
 
     /*************** RC Task ***************/
 	//Create RC Semaphore
-	// 
+	rc_hold_semaphore = xSemaphoreCreateBinary();
+	xSemaphoreGive(RC_Hold);
 	//Create RC Task
+    xTaskCreate(rc_hold_semaphore, "producer", 200, NULL, 2, NULL);
 
 }
 
@@ -54,6 +56,12 @@ void rcTask(void* pvParameters)
 
 	while (1)
 	{
+		status = xSemaphoreTake(rc_hold_semaphore, portMAX_DELAY);
+		if (status != pdPASS)
+		{
+			PRINTF("Failed to acquire producer1_semaphore\r\n");
+			while (1);
+		}
 		UART_ReadBlocking(UART1, ptr, 1);
 		if(*ptr != 0x20)
 			continue;
@@ -61,13 +69,13 @@ void rcTask(void* pvParameters)
 		if(rc_values.header == 0x4020)
 		{
 			printf("Channel 1 = %d\t", rc_values.ch1);
-//			printf("Channel 2 = %d\t", rc_values.ch2);
-//			printf("Channel 3 = %d\t", rc_values.ch3);
-//			printf("Channel 4 = %d\t", rc_values.ch4);
-//			printf("Channel 5 = %d\t", rc_values.ch5);
-//			printf("Channel 6 = %d\t", rc_values.ch6);
-//			printf("Channel 7 = %d\t", rc_values.ch7);
-//			printf("Channel 8 = %d\r\n", rc_values.ch8);
+			printf("Channel 2 = %d\t", rc_values.ch2);
+			printf("Channel 3 = %d\t", rc_values.ch3);
+			printf("Channel 4 = %d\t", rc_values.ch4);
+			printf("Channel 5 = %d\t", rc_values.ch5);
+			printf("Channel 6 = %d\t", rc_values.ch6);
+			printf("Channel 7 = %d\t", rc_values.ch7);
+			printf("Channel 8 = %d\r\n", rc_values.ch8);
 		}
 		/*
 		Ch 1 - L/R of right analog (for servo angle) left is 1000, right is 2000
@@ -133,6 +141,7 @@ void rcTask(void* pvParameters)
 			PRINTF("LED Queue Send failed!.\r\n");
 			while (1);
 		}
+		xSemaphoreGive(rc_hold_semaphore);
 	}
 }
 

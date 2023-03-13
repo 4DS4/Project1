@@ -20,12 +20,9 @@ int main(void)
     //
     setupMotorComponent();
     setupRCReceiverComponent();
-//    setupTerminalComponent();
+    setupTerminalComponent();
     setupLEDComponent();
 //    setupAccelerometerComponent();
-
-    xTaskCreate(rcTask, "producer", 200, NULL, 2, NULL);
-
 
     vTaskStartScheduler();
 

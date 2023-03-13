@@ -2,7 +2,8 @@
 
 EventGroupHandle_t event_group;
 QueueHandle_t uart_queue;
-SemaphoreHandle_t RC_Hold;
+BaseType_t status_term;
+
 
 volatile char ch;
 volatile int new_char = 0;
@@ -36,7 +37,7 @@ void setupTerminalComponent()
 	event_group = xEventGroupCreate();
 
 	//Create Terminal Control Task
-	status = xTaskCreate(terminalControlTask, "Terminal task", 200, NULL, 2, NULL);
+	status = xTaskCreate(terminalControlTask, "Terminal task", 200, NULL, 3, NULL);
     if (status != pdPASS)
     {
         PRINTF("Event creation failed!.\r\n");
@@ -144,12 +145,12 @@ void terminalControlTask(void* pvParameters)
 	EventBits_t bits;
 
 	bits = xEventGroupWaitBits(event_group,
-				LEFT_BIT | DOWN_BIT | RIGHT_BIT | UP_BIT,
-			pdTRUE,
-			pdTRUE,
-			portMAX_DELAY);
+		LEFT_BIT | DOWN_BIT | RIGHT_BIT | UP_BIT,
+		pdTRUE,
+		pdTRUE,
+		portMAX_DELAY);
 
-	status = xSemaphoreTake(RC_Hold, portMAX_DELAY);
+	status_term = xSemaphoreTake(rc_hold_semaphore, portMAX_DELAY);
 	if (status != pdPASS)
 	{
 		PRINTF("Failed to acquire producer1_semaphore\r\n");
@@ -157,9 +158,9 @@ void terminalControlTask(void* pvParameters)
 	}
 
 	//set led
-	char x = 'f'
-	status = xQueueSendToBack(led_queue, (void*)x, portMAX_DELAY);
+	char x = 'f';
+	status_term = xQueueSendToBack(led_queue, (void*)x, portMAX_DELAY);
+	vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-
-	xSemaphoreGive(RC_Hold);
+	xSemaphoreGive(rc_hold_semaphore);
 }
