@@ -2,6 +2,10 @@
 
 EventGroupHandle_t event_group;
 QueueHandle_t uart_queue;
+SemaphoreHandle_t RC_Hold;
+
+volatile char ch;
+volatile int new_char = 0;
 
 void setupTerminalComponent()
 {
@@ -26,13 +30,32 @@ void setupTerminalComponent()
     }
 
     /*************** Terminal Control Task ***************/
+
+	
     //Create Event groups
+	event_group = xEventGroupCreate();
+
 	//Create Terminal Control Task
+	status = xTaskCreate(terminalControlTask, "Terminal task", 200, NULL, 2, NULL);
+    if (status != pdPASS)
+    {
+        PRINTF("Event creation failed!.\r\n");
+        while (1);
+    }
 }
 
 void setupTerminalPins()
 {
-    //Configure UART pins
+    PORT_SetPinMux(PORTC, 13U, kPORT_MuxAlt3);	//UART4 CTS PTC13
+    PORT_SetPinMux(PORTC, 14U, kPORT_MuxAlt3);	//UART4 RX PTC14
+    PORT_SetPinMux(PORTC, 15U, kPORT_MuxAlt3);	//UART4 TX PTC15
+    PORT_SetPinMux(PORTE, 27U, kPORT_MuxAlt3);	//UART4 RTS PTE27
+
+	    /* PORTB16 (pin E10) is configured as UART0_RX */
+    PORT_SetPinMux(BOARD_DEBUG_UART_RX_PORT, BOARD_DEBUG_UART_RX_PIN, kPORT_MuxAlt3);
+
+    /* PORTB17 (pin E9) is configured as UART0_TX */
+    PORT_SetPinMux(BOARD_DEBUG_UART_TX_PORT, BOARD_DEBUG_UART_TX_PIN, kPORT_MuxAlt3);
 }
 
 void sendMessage(const char *format, ...)
@@ -55,7 +78,18 @@ void sendMessage(const char *format, ...)
 
 void setupUART()
 {
-	//Setup UART for sending and receiving
+	uart_config_t config;
+	UART_GetDefaultConfig(&config);
+	config.baudRate_Bps = 57600;
+	config.enableTx = true;
+	config.enableRx = true;
+	config.enableRxRTS = true;
+	config.enableTxCTS = true;
+	UART_Init(TARGET_UART, &config, CLOCK_GetFreq(kCLOCK_BusClk));
+
+		/******** Enable Interrupts *********/
+	UART_EnableInterrupts(TARGET_UART, kUART_RxDataRegFullInterruptEnable);
+	EnableIRQ(UART4_RX_TX_IRQn);
 }
 
 void uartTask(void* pvParameters)
@@ -81,10 +115,51 @@ void uartTask(void* pvParameters)
 
 void UART4_RX_TX_IRQHandler()
 {
-	//UART ISR
+	UART_GetStatusFlags(TARGET_UART);
+	ch = UART_ReadByte(TARGET_UART);
+
+	switch(ch)
+	{
+		case 'a':
+			xEventGroupSetBits(event_group, LEFT_BIT);
+			break;
+
+		case 's':
+			xEventGroupSetBits(event_group, DOWN_BIT);
+			break;
+
+		case 'd':
+			xEventGroupSetBits(event_group, RIGHT_BIT);
+			break;
+
+		case 'w':
+			xEventGroupSetBits(event_group, UP_BIT);
+			break;
+	}
 }
 
 void terminalControlTask(void* pvParameters)
 {
 	//Terminal Control Task implementation
+	EventBits_t bits;
+
+	bits = xEventGroupWaitBits(event_group,
+				LEFT_BIT | DOWN_BIT | RIGHT_BIT | UP_BIT,
+			pdTRUE,
+			pdTRUE,
+			portMAX_DELAY);
+
+	status = xSemaphoreTake(RC_Hold, portMAX_DELAY);
+	if (status != pdPASS)
+	{
+		PRINTF("Failed to acquire producer1_semaphore\r\n");
+		while (1);
+	}
+
+	//set led
+	char x = 'f'
+	status = xQueueSendToBack(led_queue, (void*)x, portMAX_DELAY);
+
+
+	xSemaphoreGive(RC_Hold);
 }
