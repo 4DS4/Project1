@@ -1,0 +1,13 @@
+14:23:59 **** Incremental Build of configuration Debug for project frdmk66f_freertos_hello ****
+make -r -j4 all 
+Building target: frdmk66f_freertos_hello.axf
+Invoking: MCU Linker
+arm-none-eabi-gcc -nostdlib -Xlinker -Map="frdmk66f_freertos_hello.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -T frdmk66f_freertos_hello_Debug.ld -o "frdmk66f_freertos_hello.axf" ./utilities/fsl_assert.o ./utilities/fsl_debug_console.o ./utilities/fsl_str.o  ./startup/startup_mk66f18.o  ./source/Accelerometer_Component.o ./source/LED_Component.o ./source/Motor_Control_Component.o ./source/RC_Receiver_Component.o ./source/Terminal_Component.o ./source/freertos_hello.o ./source/fsl_fxos.o ./source/semihost_hardfault.o  ./freertos/freertos_kernel/portable/MemMang/heap_4.o  ./freertos/freertos_kernel/portable/GCC/ARM_CM4F/port.o  ./freertos/freertos_kernel/croutine.o ./freertos/freertos_kernel/event_groups.o ./freertos/freertos_kernel/list.o ./freertos/freertos_kernel/queue.o ./freertos/freertos_kernel/stream_buffer.o ./freertos/freertos_kernel/tasks.o ./freertos/freertos_kernel/timers.o  ./drivers/freertos/fsl_dspi_freertos.o  ./drivers/fsl_clock.o ./drivers/fsl_common.o ./drivers/fsl_common_arm.o ./drivers/fsl_dspi.o ./drivers/fsl_ftfx_cache.o ./drivers/fsl_ftfx_controller.o ./drivers/fsl_ftfx_flash.o ./drivers/fsl_ftfx_flexnvm.o ./drivers/fsl_ftm.o ./drivers/fsl_gpio.o ./drivers/fsl_i2c.o ./drivers/fsl_lpuart.o ./drivers/fsl_rtc.o ./drivers/fsl_smc.o ./drivers/fsl_uart.o  ./device/system_MK66F18.o  ./component/uart/fsl_adapter_uart.o  ./component/serial_manager/fsl_component_serial_manager.o ./component/serial_manager/fsl_component_serial_port_uart.o  ./component/lists/fsl_component_generic_list.o  ./board/board.o ./board/clock_config.o ./board/pin_mux.o   
+c:/nxp/mcuxpressoide_11.6.1_8255/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.6.1.202207200623/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/ld.exe: cannot open linker script file frdmk66f_freertos_hello_Debug.ld: No such file or directory
+collect2.exe: error: ld returned 1 exit status
+make[1]: *** [makefile:58: frdmk66f_freertos_hello.axf] Error 1
+make: *** [makefile:49: all] Error 2
+"make -r -j4 all" terminated with exit code 2. Build might be incomplete.
+
+14:23:59 Build Failed. 3 errors, 0 warnings. (took 431ms)
+

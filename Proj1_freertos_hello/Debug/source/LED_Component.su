@@ -1,0 +1,7 @@
+C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_port.h:374:20:PORT_SetPinMux	24	static
+C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_ftm.h:731:20:FTM_StartTimer	24	static
+C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_ftm.h:1027:20:FTM_SetSoftwareTrigger	16	static
+../source/LED_Component.c:5:6:setupLEDComponent	24	static
+../source/LED_Component.c:17:6:setupLEDPins	8	static
+../source/LED_Component.c:30:6:setupLEDs	64	static
+../source/LED_Component.c:49:6:ledTask	32	static
