@@ -189,7 +189,7 @@ void terminalControlTask(void* pvParameters)
 			servo_angle = 0;
 		}
 		//set led
-		char speed = 'f';
+		char speed = 'm';
 
 		status_motor = xQueueSendToBack(motor_queue, (void*)&motor_speed, portMAX_DELAY);
 		if (status_motor != pdPASS)
