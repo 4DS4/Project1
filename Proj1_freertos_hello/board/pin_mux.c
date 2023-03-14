@@ -67,7 +67,8 @@ void BOARD_InitPins(void)
     CLOCK_EnableClock(kCLOCK_PortC);
     // Port D Clock Gate Control: Clock enabled
     CLOCK_EnableClock(kCLOCK_PortD);
-
+    // Port E Clock Gate Control: Clock enabled
+    CLOCK_EnableClock(kCLOCK_PortE);
 }
 /***********************************************************************************************************************
  * EOF

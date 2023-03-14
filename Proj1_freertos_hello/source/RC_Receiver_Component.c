@@ -3,10 +3,7 @@
 
 SemaphoreHandle_t rc_hold_semaphore;
 TaskHandle_t rc_task_handle;
-BaseType_t status_angle;
-BaseType_t status_motor;
-BaseType_t status_LED;
-BaseType_t status_sem;
+
 
 void setupRCReceiverComponent()
 {
@@ -54,32 +51,37 @@ void rcTask(void* pvParameters)
 	int servo_angle;
 	int motor_speed;
 	char speed;
+
+	BaseType_t status_angle;
+	BaseType_t status_motor;
+	BaseType_t status_LED;
+	BaseType_t status_sem;
+
 	xSemaphoreGive(rc_hold_semaphore);
 	while (1)
 	{
-//		printf("waiting for sem");
-//		status_sem = xSemaphoreTake(rc_hold_semaphore, portMAX_DELAY);
-//		if (status_sem != pdPASS)
-//		{
-//			PRINTF("Failed to acquire producer1_semaphore\r\n");
-//			while (1);
-//		}
-//		printf("got sem");
+
 		UART_ReadBlocking(UART1, ptr, 1);
 		if(*ptr != 0x20)
 			continue;
 		UART_ReadBlocking(UART1, &ptr[1], sizeof(rc_values) - 1);
-		if(rc_values.header == 0x4020)
+		status_sem = xSemaphoreTake(rc_hold_semaphore, portMAX_DELAY);
+		if (status_sem != pdPASS)
 		{
-			printf("Channel 1 = %d\t", rc_values.ch1);
+			PRINTF("Failed to acquire producer1_semaphore\r\n");
+			while (1);
+		}
+//		if(rc_values.header == 0x4020)
+//		{
+//			printf("Channel 1 = %d\t", rc_values.ch1);
 //			PRINTF("Channel 2 = %d\t", rc_values.ch2);
 //			PRINTF("Channel 3 = %d\t", rc_values.ch3);
-//			PRINTF("Channel 4 = %d\t", rc_values.ch4);
+			PRINTF("Channel 4 = %d\t", rc_values.ch4);
 //			PRINTF("Channel 5 = %d\t", rc_values.ch5);
 //			PRINTF("Channel 6 = %d\t", rc_values.ch6);
 //			PRINTF("Channel 7 = %d\t", rc_values.ch7);
 //			PRINTF("Channel 8 = %d\r\n", rc_values.ch8);
-		}
+//		}
 		/*
 		Ch 1 - L/R of right analog (for servo angle) left is 1000, right is 2000
 		Ch 2 - up/down of right analog (NOT NEEDED)
@@ -144,7 +146,7 @@ void rcTask(void* pvParameters)
 			PRINTF("LED Queue Send failed!.\r\n");
 			while (1);
 		}
-//		xSemaphoreGive(rc_hold_semaphore);
+		xSemaphoreGive(rc_hold_semaphore);
 	}
 }
 
