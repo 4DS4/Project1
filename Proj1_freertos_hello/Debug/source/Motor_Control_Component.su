@@ -1,0 +1,11 @@
+C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_port.h:374:20:PORT_SetPinMux	24	static
+C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_ftm.h:731:20:FTM_StartTimer	24	static
+C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_ftm.h:1027:20:FTM_SetSoftwareTrigger	16	static
+../source/Motor_Control_Component.c:12:6:setupMotorComponent	24	static
+../source/Motor_Control_Component.c:39:6:setupMotorPins	8	static
+../source/Motor_Control_Component.c:48:6:setupPWM	64	static
+../source/Motor_Control_Component.c:68:6:setupDCMotor	8	static
+../source/Motor_Control_Component.c:74:6:setupServo	8	static
+../source/Motor_Control_Component.c:80:6:updatePWM_dutyCycle	32	static
+../source/Motor_Control_Component.c:106:6:motorTask	32	static
+../source/Motor_Control_Component.c:123:6:positionTask	32	static
