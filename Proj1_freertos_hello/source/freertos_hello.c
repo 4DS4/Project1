@@ -24,7 +24,7 @@ int main(void)
     setupRCReceiverComponent();
     setupTerminalComponent();
     setupLEDComponent();
-//    setupAccelerometerComponent();
+    setupAccelerometerComponent();
 
     vTaskStartScheduler();
 

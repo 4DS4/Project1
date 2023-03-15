@@ -16,6 +16,15 @@
 #include "Motor_Control_Component.h"
 #include "Terminal_Component.h"
 
+#define I2C_RELEASE_BUS_COUNT 100U
+#define MAX_ACCEL_AVG_COUNT 25U
+#define HWTIMER_PERIOD      10000U
+/* multiplicative conversion constants */
+#define DegToRad 0.017453292
+#define RadToDeg 57.295779
+
+#define BOARD_GPIO_ACCEL_SCL_GPIO GPIOD
+
 void setupAccelerometerComponent();
 
 void setupAccelerometerPins();

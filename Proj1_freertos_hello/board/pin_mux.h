@@ -63,7 +63,28 @@ void BOARD_InitPins(void);
 #define BOARD_DEBUG_UART_TX_PIN 17U                   /*!<@brief PORT pin number */
 #define BOARD_DEBUG_UART_TX_PIN_MASK (1U << 17U)      /*!<@brief PORT pin mask */
                                                       /* @} */
+/* Symbols to be used with GPIO driver */
+#define BOARD_GPIO_ACCEL_SDA_GPIO GPIOD               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_GPIO_ACCEL_SDA_GPIO_PIN_MASK (1U << 9U) /*!<@brief GPIO pin mask */
 
+/* Symbols to be used with PORT driver */
+#define BOARD_GPIO_ACCEL_SDA_PORT PORTD               /*!<@brief PORT peripheral base pointer */
+#define BOARD_GPIO_ACCEL_SDA_PIN 9U                   /*!<@brief PORT pin number */
+#define BOARD_GPIO_ACCEL_SDA_PIN_MASK (1U << 9U)      /*!<@brief PORT pin mask */
+                                                      /* @} */
+
+/*! @name PORTD8 (coord C9), U8[4]/U19[11]/I2C0_SCL
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_GPIO_ACCEL_SCL_GPIO GPIOD               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_GPIO_ACCEL_SCL_GPIO_PIN_MASK (1U << 8U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_GPIO_ACCEL_SCL_PORT PORTD               /*!<@brief PORT peripheral base pointer */
+#define BOARD_GPIO_ACCEL_SCL_PIN 8U                   /*!<@brief PORT pin number */
+#define BOARD_GPIO_ACCEL_SCL_PIN_MASK (1U << 8U)      /*!<@brief PORT pin mask */
+                                                      /* @} */
 
 /***********************************************************************************************************************
  * EOF

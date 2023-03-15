@@ -15,14 +15,14 @@ status_t FXOS_Init(fxos_handle_t *fxos_handle, fxos_config_t *config)
 {
     assert(fxos_handle);
     assert(config);
-    assert(config->I2C_SendFunc);
-    assert(config->I2C_ReceiveFunc);
+    assert(config->SPI_writeFunc);
+    assert(config->SPI_readFunc);
 
     uint8_t tmp[1] = {0};
 
     /* Initialize the I2C access function. */
-    fxos_handle->I2C_SendFunc    = config->I2C_SendFunc;
-    fxos_handle->I2C_ReceiveFunc = config->I2C_ReceiveFunc;
+    fxos_handle->SPI_writeFunc    = config->SPI_writeFunc;
+    fxos_handle->SPI_readFunc = config->SPI_readFunc;
     /* Set Slave Address. */
     fxos_handle->slaveAddress = config->slaveAddress;
 
@@ -206,22 +206,22 @@ status_t FXOS_ReadReg(fxos_handle_t *handle, uint8_t reg, uint8_t *val, uint8_t 
     assert(handle);
     assert(val);
 
-    if ((handle->I2C_ReceiveFunc) == NULL)
+    if ((handle->SPI_readFunc) == NULL)
     {
         return kStatus_Fail;
     }
 
-    return handle->I2C_ReceiveFunc(handle->slaveAddress, reg, 1, val, bytesNumber);
+    return handle->SPI_readFunc(reg, val,bytesNumber);
 }
 
 status_t FXOS_WriteReg(fxos_handle_t *handle, uint8_t reg, uint8_t val)
 {
     assert(handle);
 
-    if ((handle->I2C_SendFunc) == NULL)
+    if ((handle->SPI_writeFunc) == NULL)
     {
         return kStatus_Fail;
     }
 
-    return handle->I2C_SendFunc(handle->slaveAddress, reg, 1, val);
+    return handle->SPI_writeFunc(reg, val);
 }

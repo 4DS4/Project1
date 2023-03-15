@@ -668,6 +668,9 @@
 #define A_TRAN_INIT_Y_LSB   0x7B
 #define A_TRAN_INIT_Z_LSB   0x7C
 
+typedef status_t (*SPI_WriteFunc_t)(uint8_t regAddress, uint8_t value);
+typedef status_t (*SPI_ReadFunc_t)(uint8_t regAddress, uint8_t *rxBuff, uint8_t rxBuffSize);
+
 /*! @brief Define I2C access function. */
 typedef status_t (*I2C_SendFunc_t)(uint8_t deviceAddress, uint32_t subAddress, uint8_t subaddressSize, uint32_t txBuff);
 typedef status_t (*I2C_ReceiveFunc_t)(
@@ -682,6 +685,11 @@ typedef struct _fxos_handle
     I2C_ReceiveFunc_t I2C_ReceiveFunc;
     /* The I2C slave address . */
     uint8_t slaveAddress;
+
+    /* Pointer to the user-defined SPI write Data function. */
+    SPI_WriteFunc_t SPI_writeFunc;
+    /* Pointer to the user-defined SPI read Data function. */
+    SPI_ReadFunc_t SPI_readFunc;
 } fxos_handle_t;
 
 typedef struct _fxos8700cq_data
@@ -709,6 +717,11 @@ typedef struct _fxos_config
     I2C_ReceiveFunc_t I2C_ReceiveFunc;
     /* The I2C slave address . */
     uint8_t slaveAddress;
+
+    /* Pointer to the user-defined SPI write Data function. */
+    SPI_WriteFunc_t SPI_writeFunc;
+    /* Pointer to the user-defined SPI read Data function. */
+    SPI_ReadFunc_t SPI_readFunc;
 } fxos_config_t;
 
 /*!

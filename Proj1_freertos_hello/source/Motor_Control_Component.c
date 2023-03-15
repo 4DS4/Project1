@@ -114,7 +114,7 @@ void motorTask(void* pvParameters)
 	//Motor task implementation
 	while(1){
 		status = xQueueReceive(motor_queue, (void *) &motor_val, portMAX_DELAY);
-		if(motor_val.source == 'r' || motor_val.source == 'c' ) {
+		if(motor_val.source == 'r' || motor_val.source == 't' ) {
 			speed = motor_val.speed;
 		} else {
 			offset = motor_val.speed;
