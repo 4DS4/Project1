@@ -51,6 +51,7 @@ void ledTask(void* pvParameters)
 	BaseType_t status;
 	char speed;
 	int r, g, b;
+	char str[14];
 	while(1) {
 		status = xQueueReceive(led_queue, (void *) &speed, portMAX_DELAY);
 
@@ -70,6 +71,9 @@ void ledTask(void* pvParameters)
 			g = 100;
 			break;
 		}
+
+		snprintf(str, 14, "mode: %c\r\n", speed);
+		sendMessage(str);
 
 		FTM_UpdatePwmDutycycle(FTM3, FTM_RED_CHANNEL, kFTM_EdgeAlignedPwm, r);
 		FTM_UpdatePwmDutycycle(FTM3, FTM_GREEN_CHANNEL, kFTM_EdgeAlignedPwm, g);

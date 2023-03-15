@@ -2,4 +2,4 @@ C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_port.
 ../source/RC_Receiver_Component.c:8:6:setupRCReceiverComponent	16	static
 ../source/RC_Receiver_Component.c:22:6:setupRCPins	8	static
 ../source/RC_Receiver_Component.c:30:6:setupUART_RC	24	static
-../source/RC_Receiver_Component.c:41:6:rcTask	72	static
+../source/RC_Receiver_Component.c:41:6:rcTask	80	static

@@ -7,5 +7,5 @@ C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_ftm.h
 ../source/Motor_Control_Component.c:68:6:setupDCMotor	8	static
 ../source/Motor_Control_Component.c:74:6:setupServo	8	static
 ../source/Motor_Control_Component.c:80:6:updatePWM_dutyCycle	32	static
-../source/Motor_Control_Component.c:106:6:motorTask	32	static
-../source/Motor_Control_Component.c:123:6:positionTask	32	static
+../source/Motor_Control_Component.c:106:6:motorTask	56	static
+../source/Motor_Control_Component.c:134:6:positionTask	48	static

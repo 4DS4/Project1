@@ -20,7 +20,7 @@ void setupMotorComponent()
 
     /*************** Motor Task ***************/
 	//Create Motor Queue
-	motor_queue = xQueueCreate(1, sizeof(int));
+	motor_queue = xQueueCreate(1, sizeof(motor_value));
 	//Create Motor Task
 	status = xTaskCreate(motorTask, "motor", 200, (void*)led_queue, 3, NULL);
 	if (status != pdPASS)
@@ -106,15 +106,26 @@ void updatePWM_dutyCycle(ftm_chnl_t channel, float dutyCycle)
 void motorTask(void* pvParameters)
 {
 	BaseType_t status;
-	int speed;
+	motor_value motor_val;
+	int speed = 0;
+	int offset = 0;
 	float dutyCycle;
+	char str[14];
 	//Motor task implementation
 	while(1){
-		status = xQueueReceive(motor_queue, (void *) &speed, portMAX_DELAY);
+		status = xQueueReceive(motor_queue, (void *) &motor_val, portMAX_DELAY);
+		if(motor_val.source == 'r' || motor_val.source == 'c' ) {
+			speed = motor_val.speed;
+		} else {
+			offset = motor_val.speed;
+		}
 		if (status != pdPASS)
 						PRINTF("Queue Receive failed!.\r\n");
-		dutyCycle = speed * 0.0125f/100.0f + 0.07025;	//use these conversions
+		dutyCycle = (speed+offset) * 0.0125f/100.0f + 0.07025;	//use these conversions
 		updatePWM_dutyCycle(FTM_CHANNEL_DC_MOTOR,  dutyCycle);
+
+		snprintf(str, 14, "speed: %d\r\n", speed);
+		sendMessage(str);
 //		FTM_SetSoftwareTrigger(FTM_MOTORS, true);
 	}
 
@@ -125,14 +136,22 @@ void positionTask(void* pvParameters)
 	BaseType_t status;
 	int angle;
 	float dutyCycle;
+	char str[14];
+
 	//Position task implementation
 	while(1) {
 		status = xQueueReceive(angle_queue, (void *) &angle, portMAX_DELAY);
 		if (status != pdPASS)
 						PRINTF("Queue Receive failed!.\r\n");
 		dutyCycle = angle * 0.0125f/100.0f + 0.079;
+
+		snprintf(str, 14, "pos: %d\r\n", angle);
+		sendMessage(str);
+
 		updatePWM_dutyCycle(FTM_CHANNEL_SERVO, dutyCycle);
 		FTM_SetSoftwareTrigger(FTM_MOTORS, true);
+
+
 	}
 
 }

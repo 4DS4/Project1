@@ -16,20 +16,20 @@ void setupTerminalComponent()
 
 	setupUART();
 
-//    /*************** UART Task ***************/
-//	uart_queue = xQueueCreate(10, sizeof(char*));
-//	if (uart_queue == NULL)
-//	{
-//		PRINTF("Queue creation failed!.\r\n");
-//		while (1);
-//	}
-//    status = xTaskCreate(uartTask, "UART task", 200, NULL, 3, NULL);
-//    if (status != pdPASS)
-//    {
-//        PRINTF("Task creation failed!.\r\n");
-//        while (1);
-//    }
-//
+    /*************** UART Task ***************/
+	uart_queue = xQueueCreate(10, sizeof(char*));
+	if (uart_queue == NULL)
+	{
+		PRINTF("Queue creation failed!.\r\n");
+		while (1);
+	}
+    status = xTaskCreate(uartTask, "UART task", 200, NULL, 3, NULL);
+    if (status != pdPASS)
+    {
+        PRINTF("Task creation failed!.\r\n");
+        while (1);
+    }
+
     /*************** Terminal Control Task ***************/
 
 
@@ -53,23 +53,23 @@ void setupTerminalPins()
     PORT_SetPinMux(PORTE, 27U, kPORT_MuxAlt3);	//UART4 RTS PTE27
 }
 
-//void sendMessage(const char *format, ...)
-//{
-//	va_list args;
-//
-//	char* str = (char*)pvPortMalloc(250 * sizeof(char));
-//
-//	va_start(args, format);
-//	vsprintf(str, format, args);
-//
-//	if(xQueueSendToBack(uart_queue, (void *) &str, portMAX_DELAY) != pdPASS )
-//	{
-//		PRINTF("Send message to uart_queue failed!.\r\n");
-//		while (1);
-//	}
-//
-//	va_end(args);
-//}
+void sendMessage(const char *format, ...)
+{
+	va_list args;
+
+	char* str = (char*)pvPortMalloc(250 * sizeof(char));
+
+	va_start(args, format);
+	vsprintf(str, format, args);
+
+	if(xQueueSendToBack(uart_queue, (void *) &str, portMAX_DELAY) != pdPASS )
+	{
+		PRINTF("Send message to uart_queue failed!.\r\n");
+		while (1);
+	}
+
+	va_end(args);
+}
 
 void setupUART()
 {
@@ -87,26 +87,27 @@ void setupUART()
 	EnableIRQ(UART4_RX_TX_IRQn);
 }
 
-//void uartTask(void* pvParameters)
-//{
-//	char* welcome_message = "UART task started\n\r";
-//	char* received_str;
-//	BaseType_t status;
-//
-//	UART_WriteBlocking(TARGET_UART, welcome_message, strlen(welcome_message));
-//
-//	while(1)
-//	{
-//		status = xQueueReceive(uart_queue, (void *) &received_str, portMAX_DELAY);
-//		if (status != pdPASS)
-//		{
-//			PRINTF("Queue Send failed!.\r\n");
-//			while (1);
-//		}
-//		UART_WriteBlocking(TARGET_UART, received_str, strlen(received_str));
-//		vPortFree(received_str);
-//	}
-//}
+void uartTask(void* pvParameters)
+{
+	char* welcome_message = "UART task started\n\r";
+	char* received_str;
+	BaseType_t status;
+
+	UART_WriteBlocking(TARGET_UART, welcome_message, strlen(welcome_message));
+
+	while(1)
+	{
+		status = xQueueReceive(uart_queue, (void *) &received_str, portMAX_DELAY);
+		if (status != pdPASS)
+		{
+			PRINTF("Queue Send failed!.\r\n");
+			while (1);
+		}
+
+		UART_WriteBlocking(TARGET_UART, received_str, strlen(received_str));
+		vPortFree(received_str);
+	}
+}
 
 void UART4_RX_TX_IRQHandler()
 {
@@ -144,6 +145,7 @@ void terminalControlTask(void* pvParameters)
 	int servo_angle;
 	int motor_speed;
 	char speed;
+	motor_value motor_val;
 
 	BaseType_t status_angle;
 	BaseType_t status_motor;
@@ -166,32 +168,31 @@ void terminalControlTask(void* pvParameters)
 
 		if((bits & LEFT_BIT) == LEFT_BIT)
 		{
-			PRINTF("Left\r\n");
 			motor_speed = 25;
 			servo_angle = 100;
 		}
 		if((bits & RIGHT_BIT) == RIGHT_BIT)
 		{
-			PRINTF("Right\r\n");
 			motor_speed = 25;
 			servo_angle = -100;
 		}
 		if((bits & UP_BIT) == UP_BIT)
 		{
-			PRINTF("Up\r\n");
 			motor_speed = 25;
 			servo_angle = 0;
 		}
 		if((bits & DOWN_BIT) == DOWN_BIT)
 		{
-			PRINTF("Down\r\n");
 			motor_speed = -25;
 			servo_angle = 0;
 		}
 		//set led
 		char speed = 'm';
 
-		status_motor = xQueueSendToBack(motor_queue, (void*)&motor_speed, portMAX_DELAY);
+		motor_val.source = 'r';
+		motor_val.speed = motor_speed;
+
+		status_motor = xQueueSendToBack(motor_queue, (void*)&motor_val, portMAX_DELAY);
 		if (status_motor != pdPASS)
 		{
 			PRINTF("Motor Speed Queue Send failed!.\r\n");
@@ -212,7 +213,7 @@ void terminalControlTask(void* pvParameters)
 			while (1);
 		}
 
-		vTaskDelay(15 / portTICK_PERIOD_MS);
+		vTaskDelay(20 / portTICK_PERIOD_MS);
 
 		xSemaphoreGive(rc_hold_semaphore);
 	}

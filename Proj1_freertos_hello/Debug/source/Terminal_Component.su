@@ -5,6 +5,8 @@ C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_port.
 C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_uart.h:667:23:UART_ReadByte	16	static
 ../source/Terminal_Component.c:11:6:setupTerminalComponent	24	static
 ../source/Terminal_Component.c:48:6:setupTerminalPins	8	static
+../source/Terminal_Component.c:56:6:sendMessage	16	static
 ../source/Terminal_Component.c:74:6:setupUART	24	static
-../source/Terminal_Component.c:111:6:UART4_RX_TX_IRQHandler	16	static
-../source/Terminal_Component.c:139:6:terminalControlTask	56	static
+../source/Terminal_Component.c:90:6:uartTask	40	static
+../source/Terminal_Component.c:112:6:UART4_RX_TX_IRQHandler	16	static
+../source/Terminal_Component.c:140:6:terminalControlTask	64	static

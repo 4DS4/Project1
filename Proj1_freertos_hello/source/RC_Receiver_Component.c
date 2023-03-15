@@ -51,6 +51,7 @@ void rcTask(void* pvParameters)
 	int servo_angle;
 	int motor_speed;
 	char speed;
+	motor_value motor_val;
 
 	BaseType_t status_angle;
 	BaseType_t status_motor;
@@ -76,7 +77,7 @@ void rcTask(void* pvParameters)
 //			printf("Channel 1 = %d\t", rc_values.ch1);
 //			PRINTF("Channel 2 = %d\t", rc_values.ch2);
 //			PRINTF("Channel 3 = %d\t", rc_values.ch3);
-			PRINTF("Channel 4 = %d\t", rc_values.ch4);
+//			PRINTF("Channel 4 = %d\t", rc_values.ch4);
 //			PRINTF("Channel 5 = %d\t", rc_values.ch5);
 //			PRINTF("Channel 6 = %d\t", rc_values.ch6);
 //			PRINTF("Channel 7 = %d\t", rc_values.ch7);
@@ -124,9 +125,11 @@ void rcTask(void* pvParameters)
 				speed = 's'; // slow
 			}
 		}
-		printf("Speed: %d Angle: %d LED:%c\n", motor_speed, servo_angle, speed);
 
-		status_motor = xQueueSendToBack(motor_queue, (void*)&motor_speed, portMAX_DELAY);
+		motor_val.source = 'r';
+		motor_val.speed = motor_speed;
+
+		status_motor = xQueueSendToBack(motor_queue, (void*)&motor_val, portMAX_DELAY);
 		if (status_motor != pdPASS)
 		{
 			PRINTF("Motor Speed Queue Send failed!.\r\n");

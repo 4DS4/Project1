@@ -18,6 +18,11 @@
 
 extern QueueHandle_t motor_queue, angle_queue;
 
+typedef struct {
+	char source;
+	int speed;
+} motor_value;
+
 void setupMotorComponent();
 void setupDCMotor();
 void setupServo();

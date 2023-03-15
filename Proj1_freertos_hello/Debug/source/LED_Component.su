@@ -4,4 +4,4 @@ C:\Users\markanda\Documents\4DS4\Project1\Proj1_freertos_hello\drivers/fsl_ftm.h
 ../source/LED_Component.c:5:6:setupLEDComponent	24	static
 ../source/LED_Component.c:17:6:setupLEDPins	8	static
 ../source/LED_Component.c:30:6:setupLEDs	64	static
-../source/LED_Component.c:49:6:ledTask	32	static
+../source/LED_Component.c:49:6:ledTask	48	static
